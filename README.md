@@ -57,3 +57,15 @@ interview-agent/
 ├── .env                # API key (not pushed to GitHub)
 └── .gitignore
 ```
+
+## Screenshots
+
+```
+<img width="922" height="401" alt="Screenshot 2026-07-06 124326" src="https://github.com/user-attachments/assets/fc0372a0-9724-4932-88f3-c2cc8a277ace" />
+
+<img width="922" height="403" alt="Screenshot 2026-07-06 124344" src="https://github.com/user-attachments/assets/a7f54fb7-01eb-4343-9931-5fd0a371dba2" />
+
+<img width="917" height="403" alt="Screenshot 2026-07-06 124553" src="https://github.com/user-attachments/assets/d684e2f3-8520-471f-98f4-c36e175b4fad" />
+
+```
+
