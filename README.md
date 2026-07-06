@@ -47,11 +47,13 @@ Get a free API key at [console.groq.com](https://console.groq.com)
 5. Open `http://127.0.0.1:5000` in your browser
 
 ## Project Structure
-interview-agent/
-├── app.py          # Flask server and route logic
-├── agent.py        # State management, prompts, PDF parsing
-├── templates/
-│   └── index.html  # Frontend UI
-├── .env            # API key (not pushed to GitHub)
-└── .gitignore
 
+```
+interview-agent/
+├── app.py              # Flask server and route logic
+├── agent.py            # State management, prompts, PDF parsing
+├── templates/
+│   └── index.html      # Frontend UI
+├── .env                # API key (not pushed to GitHub)
+└── .gitignore
+```
