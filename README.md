@@ -60,12 +60,17 @@ interview-agent/
 
 ## Screenshots
 
-```
-<img width="922" height="401" alt="Screenshot 2026-07-06 124326" src="https://github.com/user-attachments/assets/fc0372a0-9724-4932-88f3-c2cc8a277ace" />
+**Landing Screen**
 
-<img width="922" height="403" alt="Screenshot 2026-07-06 124344" src="https://github.com/user-attachments/assets/a7f54fb7-01eb-4343-9931-5fd0a371dba2" />
+<img width="922" height="401" alt="Screenshot 2026-07-06 124326" src="https://github.com/user-attachments/assets/f46195f2-a26a-4e92-a64d-17cfff45edf4" />
+">
 
-<img width="917" height="403" alt="Screenshot 2026-07-06 124553" src="https://github.com/user-attachments/assets/d684e2f3-8520-471f-98f4-c36e175b4fad" />
+**Resume Upload**
 
-```
+<img width="922" height="403" alt="Screenshot 2026-07-06 124344" src="https://github.com/user-attachments/assets/738adb55-5796-4ba6-bee7-ef7aecab473c" />
+
+
+**Interview in Progress**
+
+<img width="917" height="403" alt="Screenshot 2026-07-06 124553" src="https://github.com/user-attachments/assets/f3890e72-c56d-4b8d-9a94-2a9979e1bd6c" />
 
