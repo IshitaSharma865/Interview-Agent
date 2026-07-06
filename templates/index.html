@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interview Agent</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f8faff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .screen { display: none; flex-direction: column; align-items: center; }
+        .screen.active { display: flex; }
+
+        .greeting {
+            font-size: 24px; font-weight: 600;
+            color: #1e3a5f;
+            text-align: center;
+            margin-bottom: 0.4rem;
+            letter-spacing: -0.3px;
+        }
+
+        .greeting span { color: #3b82f6; }
+
+        .subtitle {
+            font-size: 14px; color: #64748b;
+            text-align: center; margin-bottom: 2rem;
+            max-width: 360px; line-height: 1.6;
+        }
+
+        /* Card */
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            border: 1px solid #e0eaff;
+            box-shadow: 0 4px 30px rgba(147,197,253,0.2), 0 1px 4px rgba(59,130,246,0.06);
+            padding: 2rem;
+            width: 100%; max-width: 420px;
+            display: flex; flex-direction: column; gap: 1rem;
+        }
+
+        .field-label {
+            font-size: 11px; font-weight: 600;
+            color: #3b82f6; letter-spacing: 0.06em;
+            text-transform: uppercase; margin-bottom: 5px;
+        }
+
+        .field-wrap { display: flex; flex-direction: column; }
+
+        .field-input {
+            background: #f8faff;
+            border: 1px solid #e0eaff;
+            border-radius: 10px;
+            padding: 0.65rem 1rem;
+            font-size: 14px; color: #1e3a5f;
+            outline: none; font-family: inherit;
+            transition: all 0.15s;
+        }
+
+        .field-input::placeholder { color: #94a3b8; }
+        .field-input:focus {
+            border-color: #93c5fd;
+            box-shadow: 0 0 0 3px rgba(147,197,253,0.25);
+            background: #fff;
+        }
+
+        .divider { height: 1px; background: #f0f4ff; }
+
+        .btn {
+            background: #3b82f6; color: #fff;
+            border: none; border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-size: 14px; font-weight: 600;
+            cursor: pointer; font-family: inherit;
+            transition: all 0.15s;
+            box-shadow: 0 2px 12px rgba(59,130,246,0.25);
+        }
+        .btn:hover {
+            background: #2563eb;
+            box-shadow: 0 4px 18px rgba(59,130,246,0.35);
+        }
+        .btn:active { transform: scale(0.98); }
+
+        .btn-outline {
+            background: transparent; color: #3b82f6;
+            border: 1px solid #bfdbfe; border-radius: 10px;
+            padding: 0.75rem 1.5rem; font-size: 14px;
+            font-weight: 500; cursor: pointer; font-family: inherit;
+            transition: all 0.15s;
+        }
+        .btn-outline:hover { background: #eff6ff; }
+
+        .tagline {
+            margin-top: 1.25rem; font-size: 12px;
+            color: #94a3b8;
+        }
+
+        /* Upload */
+        .upload-area {
+            border: 1.5px dashed #bfdbfe;
+            border-radius: 12px;
+            background: #f8faff;
+            padding: 2rem 1rem;
+            text-align: center; cursor: pointer;
+            transition: all 0.15s;
+        }
+        .upload-area:hover {
+            background: #eff6ff;
+            border-color: #93c5fd;
+        }
+        .upload-icon { font-size: 28px; margin-bottom: 8px; }
+        .upload-label { font-size: 14px; color: #1e3a5f; margin-bottom: 4px; font-weight: 500; }
+        .upload-hint { font-size: 12px; color: #94a3b8; }
+        .upload-selected { font-size: 13px; color: #3b82f6; margin-top: 8px; font-weight: 500; }
+
+        .review-box {
+            background: #f8faff;
+            border: 1px solid #e0eaff;
+            border-radius: 12px; padding: 1.25rem;
+            font-size: 13px; line-height: 1.8; color: #1e3a5f;
+            white-space: pre-wrap; max-height: 260px; overflow-y: auto;
+        }
+        .review-title {
+            font-size: 13px; font-weight: 600;
+            color: #3b82f6; margin-bottom: 8px;
+            text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .loading-text {
+            font-size: 13px; color: #3b82f6;
+            text-align: center; padding: 1rem 0;
+        }
+
+        /* Chat */
+        #chat-area {
+            display: flex; flex-direction: column;
+            width: 100%; max-width: 640px;
+        }
+
+        .chat-header {
+            display: flex; align-items: center;
+            gap: 10px; margin-bottom: 1rem;
+            padding: 0 4px;
+        }
+
+        .chat-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: #eff6ff;
+            border: 1.5px solid #bfdbfe;
+            box-shadow: 0 0 10px rgba(147,197,253,0.4);
+            display: flex; align-items: center;
+            justify-content: center; font-size: 16px;
+        }
+
+        .chat-name {
+            font-size: 15px; font-weight: 600; color: #1e3a5f;
+        }
+
+        .chat-status {
+            font-size: 12px; color: #3b82f6;
+        }
+
+        #chat-box {
+            background: #ffffff;
+            border-radius: 20px;
+            border: 1px solid #e0eaff;
+            box-shadow: 0 4px 30px rgba(147,197,253,0.15);
+            padding: 1.5rem;
+            height: 460px; overflow-y: auto;
+            margin-bottom: 1rem;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+
+        /* Bubbles */
+        .bubble-user {
+            background: #3b82f6; color: #fff;
+            border-radius: 16px 16px 4px 16px;
+            padding: 10px 14px; font-size: 14px;
+            line-height: 1.6; align-self: flex-end;
+            max-width: 78%;
+            box-shadow: 0 2px 8px rgba(59,130,246,0.2);
+        }
+
+        .bubble-question {
+            background: #f8faff;
+            border: 1px solid #e0eaff;
+            border-radius: 16px 16px 16px 4px;
+            padding: 12px 16px; font-size: 14px;
+            line-height: 1.6; color: #1e3a5f; max-width: 88%;
+        }
+
+        .q-label {
+            font-size: 10px; font-weight: 600;
+            color: #3b82f6; text-transform: uppercase;
+            letter-spacing: 0.06em; margin-bottom: 5px;
+        }
+
+        .bubble-eval {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px; padding: 10px 14px;
+            font-size: 13px; line-height: 1.6; max-width: 88%;
+        }
+        .bubble-eval.low {
+            background: #fff7ed;
+            border-color: #fed7aa;
+        }
+
+        .score-row {
+            display: flex; align-items: center;
+            gap: 8px; margin-bottom: 5px;
+        }
+
+        .score-badge {
+            background: #22c55e; color: white;
+            font-size: 11px; font-weight: 700;
+            padding: 2px 10px; border-radius: 20px;
+        }
+        .score-badge.low { background: #f97316; }
+
+        .eval-feedback { font-size: 13px; color: #166534; }
+        .eval-feedback.low { color: #9a3412; }
+
+        .bubble-transition {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px; padding: 8px 14px;
+            font-size: 13px; color: #1d4ed8;
+            font-weight: 500; text-align: center;
+            align-self: center;
+        }
+
+        .bubble-report {
+            background: #f8faff;
+            border: 1px solid #bfdbfe;
+            border-radius: 16px; padding: 16px;
+            font-size: 13px; line-height: 1.8;
+            color: #1e3a5f; white-space: pre-wrap;
+            max-width: 100%;
+        }
+
+        .report-title {
+            font-size: 13px; font-weight: 600;
+            color: #3b82f6; margin-bottom: 10px;
+            text-transform: uppercase; letter-spacing: 0.05em;
+        }
+
+        /* Input */
+        #input-area { display: flex; gap: 8px; }
+
+        #user-input {
+            flex: 1; background: #fff;
+            border: 1px solid #e0eaff;
+            border-radius: 10px; padding: 0.65rem 1rem;
+            font-size: 14px; color: #1e3a5f;
+            outline: none; font-family: inherit;
+            transition: all 0.15s;
+        }
+        #user-input:focus {
+            border-color: #93c5fd;
+            box-shadow: 0 0 0 3px rgba(147,197,253,0.2);
+        }
+        #user-input::placeholder { color: #94a3b8; }
+
+        #send-btn {
+            background: #3b82f6; color: white;
+            border: none; border-radius: 10px;
+            padding: 0.65rem 1.25rem;
+            font-size: 14px; font-weight: 600;
+            cursor: pointer; font-family: inherit;
+            box-shadow: 0 2px 10px rgba(59,130,246,0.25);
+            transition: all 0.15s;
+        }
+        #send-btn:hover {
+            background: #2563eb;
+            box-shadow: 0 4px 14px rgba(59,130,246,0.35);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Screen 1: Role + Experience -->
+    <div id="screen-1" class="screen active">
+        <p class="greeting">Hi, I'm <span>Vex</span> — your interviewer.</p>
+        <p class="subtitle">Enter your target role and experience level to begin your mock interview session.</p>
+        <div class="card">
+            <div class="field-wrap">
+                <p class="field-label">Job role</p>
+                <input class="field-input" type="text" id="role-input" placeholder="e.g. Data Analyst, AI Engineer" />
+            </div>
+            <div class="divider"></div>
+            <div class="field-wrap">
+                <p class="field-label">Experience level</p>
+                <input class="field-input" type="text" id="experience-input" placeholder="e.g. Fresher, 1–2 years" />
+            </div>
+            <button class="btn" onclick="goToScreen2()">Next →</button>
+        </div>
+        <p class="tagline">Powered by AI · Free to use · No sign-up needed</p>
+    </div>
+
+    <!-- Screen 2: Resume Upload -->
+    <div id="screen-2" class="screen">
+        <div class="avatar">📄</div>
+        <p class="greeting">Upload your <span>resume</span></p>
+        <p class="subtitle">Vex will review it and tailor your interview questions to your background.</p>
+        <div class="card">
+            <div class="upload-area" onclick="document.getElementById('resume-file').click()">
+                <div class="upload-icon">📎</div>
+                <p class="upload-label">Click to upload your resume</p>
+                <p class="upload-hint">PDF files only</p>
+                <p class="upload-selected" id="file-name">No file chosen</p>
+            </div>
+            <input type="file" id="resume-file" accept=".pdf" style="display:none" onchange="onFileSelected()" />
+
+            <div id="loading-review" style="display:none;">
+                <p class="loading-text">Analysing your resume...</p>
+            </div>
+
+            <div id="review-result" style="display:none;">
+                <div class="review-box">
+                    <div class="review-title">Resume Review</div>
+                    <div id="review-text"></div>
+                </div>
+            </div>
+
+            <button class="btn" id="upload-btn" onclick="uploadResume()" style="display:none;">Analyse Resume →</button>
+            <button class="btn" id="continue-btn" onclick="goToScreen3()" style="display:none;">Continue to Interview →</button>
+            <button class="btn-outline" onclick="goToScreen3()">Skip — start without resume</button>
+        </div>
+    </div>
+
+    <!-- Screen 3: Chat -->
+    <div id="screen-3" class="screen">
+        <div id="chat-area">
+            <div class="chat-header">
+                <div class="chat-avatar">🤖</div>
+                <div>
+                    <div class="chat-name">Vex</div>
+                    <div class="chat-status">Interview in progress</div>
+                </div>
+            </div>
+            <div id="chat-box"></div>
+            <div id="input-area">
+                <input type="text" id="user-input" placeholder="Type your answer..." />
+                <button id="send-btn" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let sessionId = null;
+
+        async function goToScreen2() {
+            const role = document.getElementById("role-input").value.trim();
+            const experience = document.getElementById("experience-input").value.trim();
+            if (!role || !experience) return alert("Please fill in both fields.");
+
+            const response = await fetch("/start", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ role, experience })
+            });
+
+            const data = await response.json();
+            sessionId = data.session_id;
+            showScreen("screen-2");
+        }
+
+        function onFileSelected() {
+            const file = document.getElementById("resume-file").files[0];
+            if (file) {
+                document.getElementById("file-name").textContent = file.name;
+                document.getElementById("upload-btn").style.display = "block";
+                document.getElementById("continue-btn").style.display = "none";
+                document.getElementById("review-result").style.display = "none";
+            }
+        }
+
+        async function uploadResume() {
+            const file = document.getElementById("resume-file").files[0];
+            if (!file) return;
+
+            document.getElementById("upload-btn").style.display = "none";
+            document.getElementById("loading-review").style.display = "block";
+
+            const formData = new FormData();
+            formData.append("resume", file);
+            formData.append("session_id", sessionId);
+
+            const response = await fetch("/upload-resume", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+
+            document.getElementById("loading-review").style.display = "none";
+            document.getElementById("review-text").textContent = data.review;
+            document.getElementById("review-result").style.display = "block";
+            document.getElementById("continue-btn").style.display = "block";
+        }
+
+        function goToScreen3() {
+            showScreen("screen-3");
+            startChat();
+        }
+
+        async function startChat() {
+            const role = document.getElementById("role-input").value.trim();
+            const experience = document.getElementById("experience-input").value.trim();
+            addQuestion(`Starting your ${experience} ${role} interview. Let's begin with the technical round.`);
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById("user-input");
+            const message = input.value.trim();
+            if (!message) return;
+
+            addUserBubble(message);
+            input.value = "";
+
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message, session_id: sessionId })
+            });
+
+            const data = await response.json();
+
+            if (data.evaluation) addEvaluation(data.evaluation.score, data.evaluation.feedback);
+            if (data.type === "report") {
+                if (data.report) addReport(data.report);
+            } else {
+                if (data.transition) addTransition(data.transition);
+                if (data.question) addQuestion(data.question);
+            }
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+            document.getElementById(id).classList.add("active");
+        }
+
+        function addUserBubble(text) {
+            const div = document.createElement("div");
+            div.className = "bubble-user";
+            div.textContent = text;
+            appendToChat(div);
+        }
+
+        function addQuestion(text) {
+            const div = document.createElement("div");
+            div.className = "bubble-question";
+            div.innerHTML = `<div class="q-label">Vex asks</div>${escapeHtml(text)}`;
+            appendToChat(div);
+        }
+
+        function addEvaluation(score, feedback) {
+            const isLow = score < 6;
+            const div = document.createElement("div");
+            div.className = "bubble-eval" + (isLow ? " low" : "");
+            div.innerHTML = `
+                <div class="score-row">
+                    <span class="score-badge${isLow ? " low" : ""}">${score}/10</span>
+                    <span style="font-size:12px; color:${isLow ? '#9a3412' : '#166534'}; font-weight:500;">
+                        ${score >= 8 ? "Excellent!" : score >= 6 ? "Good answer" : "Needs improvement"}
+                    </span>
+                </div>
+                <div class="eval-feedback${isLow ? " low" : ""}">${escapeHtml(feedback)}</div>
+            `;
+            appendToChat(div);
+        }
+
+        function addTransition(text) {
+            const div = document.createElement("div");
+            div.className = "bubble-transition";
+            div.textContent = text;
+            appendToChat(div);
+        }
+
+        function addReport(text) {
+            const div = document.createElement("div");
+            div.className = "bubble-report";
+            div.innerHTML = `<div class="report-title">Interview Report</div>${escapeHtml(text)}`;
+            appendToChat(div);
+        }
+
+        function appendToChat(div) {
+            const chatBox = document.getElementById("chat-box");
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+        }
+
+        document.addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                const s1 = document.getElementById("screen-1");
+                if (s1.classList.contains("active")) goToScreen2();
+                else if (document.getElementById("screen-3").classList.contains("active")) sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
